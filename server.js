@@ -1,5 +1,6 @@
 const fs = require("fs");
 const express = require("express");
+const https = require("https");
 const mysql = require("mysql2");
 const cors = require("cors");
 require("dotenv").config();
@@ -45,5 +46,14 @@ app.post("/update", (req, res) => {
     });
 });
 
-// **Start the Server**
-app.listen(4000, () => console.log("Server running on port 4000"));
+// ✅ Use HTTPS instead of HTTP
+https.createServer(options, app).listen(4000, () => {
+    console.log("🚀 Secure server running on **HTTPS** at https://YOUR-DOMAIN:4000");
+});
+
+// ✅ Optional: Redirect HTTP to HTTPS
+const http = require("http");
+http.createServer((req, res) => {
+    res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
+    res.end();
+}).listen(80);
